@@ -1,25 +1,33 @@
 import cv2
+import os
+
+image_folder = 'images'
+if not os.path.exists(image_folder):
+    os.makedirs(image_folder)
+
+image_count = 0
+
+
+def save_and_exit(key, cap, image_count, image_folder):
+    if key == ord('s'):
+        cv2.imwrite(f'{image_folder}/img{image_count}.png', cap.read()[1])
+        print("Image saved!")
+        image_count += 1
+
 
 cap = cv2.VideoCapture(2)
 
-num = 0
-
 while cap.isOpened():
+    success, img = cap.read()
 
-    succes, img = cap.read()
+    key = cv2.waitKey(5)
 
-    k = cv2.waitKey(5)
+    save_and_exit(key, cap, image_count, image_folder)
 
-    if k == 27:
+    if key == 27:  # Escape Key
         break
-    elif k == ord('s'): # wait for 's' key to save and exit
-        cv2.imwrite('images/img' + str(num) + '.png', img)
-        print("image saved!")
-        num += 1
 
-    cv2.imshow('Img',img)
+    cv2.imshow('Img', img)
 
-# Release and destroy all windows before termination
 cap.release()
-
 cv2.destroyAllWindows()
